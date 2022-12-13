@@ -8,7 +8,8 @@ export type WhereOperators =
   | "is-empty"
   | "not-empty"
   | "and"
-  | "or";
+  | "or"
+  | "not";
 
 export type WhereClauseConfig =
   | EqualsOperatorConfig
@@ -18,7 +19,8 @@ export type WhereClauseConfig =
   | EmptyOperatorConfig
   | NotEmptyOperatorConfig
   | AndOperatorConfig
-  | OrOperatorConfig;
+  | OrOperatorConfig
+  | NotOperatorConfig;
 
 export type EqualsOperatorConfig =
   | [
@@ -57,7 +59,8 @@ type ComparisonOperatorValues = FieldNameDescriptor | number;
 
 export type WhereOperatorTranspilerFn = (
   config: WhereClauseConfig,
-  getFieldOrValueSql: GetFieldOrValueSqlFn
+  getFieldOrValueSql: GetFieldOrValueSqlFn,
+  processChildFn: WhereOperatorTranspilerFn
 ) => string;
 
 export type AndOperatorConfig =
@@ -65,3 +68,5 @@ export type AndOperatorConfig =
   | ["and", WhereClauseConfig, WhereClauseConfig];
 
 export type OrOperatorConfig = ["or", WhereClauseConfig, WhereClauseConfig];
+
+export type NotOperatorConfig = ["not", WhereClauseConfig];

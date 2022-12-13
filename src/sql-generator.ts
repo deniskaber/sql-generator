@@ -40,7 +40,7 @@ const processWhereOperator = (
   const operatorTranspiler = WhereClauseToTranspilerMap[rootOperator];
 
   if (operatorTranspiler) {
-    return operatorTranspiler(config, getFieldOrValueSql);
+    return operatorTranspiler(config, getFieldOrValueSql, processWhereOperator);
   }
 
   console.warn("Unknown operator passed to where clause", {

@@ -3,6 +3,7 @@ import { transpileEqualsNotEqualsOperator } from "./operators/equals-not-equals"
 import { transpileEmptyNotEmptyOperator } from "./operators/empty-not-empty";
 import { WhereOperators, WhereOperatorTranspilerFn } from "./types";
 import { transpileAndOrOperator } from "./operators/and-or";
+import { transpileNotOperator } from "./operators/not";
 
 export const WhereClauseToTranspilerMap: Record<
   WhereOperators,
@@ -17,6 +18,5 @@ export const WhereClauseToTranspilerMap: Record<
 
   and: transpileAndOrOperator as WhereOperatorTranspilerFn,
   or: transpileAndOrOperator as WhereOperatorTranspilerFn,
-
-  // TODO: add support for not
+  not: transpileNotOperator as WhereOperatorTranspilerFn,
 };

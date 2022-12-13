@@ -42,11 +42,19 @@ export const transpileAndOrOperator = (
   const [operator, leftClause, rightClause] = config;
 
   if (!rightClause) {
-    return processChildFn(leftClause, getFieldOrValueSql);
+    return processChildFn(leftClause, getFieldOrValueSql, processChildFn);
   }
 
-  const leftResult = processChildFn(leftClause, getFieldOrValueSql);
-  const rightResult = processChildFn(rightClause, getFieldOrValueSql);
+  const leftResult = processChildFn(
+    leftClause,
+    getFieldOrValueSql,
+    processChildFn
+  );
+  const rightResult = processChildFn(
+    rightClause,
+    getFieldOrValueSql,
+    processChildFn
+  );
 
   return formatAndOrClauseResult(
     operator,
