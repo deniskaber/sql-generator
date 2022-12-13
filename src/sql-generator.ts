@@ -1,60 +1,46 @@
 import { SqlDialect, SqlDialectUnion, SqlQueryParameters } from "./types";
-import { WhereClauseToTranspilerMap } from "./transpilers/where-clause";
-import {
-  GetFieldOrValueSqlFn,
-  SqlQueryFields,
-} from "./transpilers/fields/types";
-import { WhereClauseConfig } from "./transpilers/where-clause/types";
+import { processWhereOperator } from "./transpilers/where-clause";
+import { SqlQueryFields } from "./transpilers/fields/types";
 import { getFieldOrValueSqlGenerator } from "./transpilers/fields";
+import { processLimitOperator } from "./transpilers/limit-clause";
 
 export const generateSql = (
-  dialect: SqlDialectUnion,
+  dialectString: SqlDialectUnion,
   fields: SqlQueryFields,
   query: SqlQueryParameters
 ): string => {
   let result = "SELECT * FROM data";
+  const dialect = dialectString as SqlDialect;
 
-  const getFieldOrValueSql = getFieldOrValueSqlGenerator(
-    dialect as SqlDialect,
-    fields
-  );
+  const getFieldOrValueSql = getFieldOrValueSqlGenerator(dialect, fields);
 
   if (query.where) {
     const whereString = processWhereOperator(
       query.where,
       getFieldOrValueSql,
-      dialect as SqlDialect
+      dialect
     );
     if (whereString) {
       result += ` WHERE ${whereString}`;
     }
   }
 
-  // TODO: add handling for "limit"
+  if (!!query.limit) {
+    const limitStr = processLimitOperator(query.limit, dialect);
+    result = injectLimitString(result, limitStr, dialect);
+  }
 
   return result;
 };
 
-const processWhereOperator = (
-  config: WhereClauseConfig,
-  getFieldOrValueSql: GetFieldOrValueSqlFn,
+const injectLimitString = (
+  query: string,
+  limitString: string,
   dialect: SqlDialect
 ): string => {
-  const rootOperator = config[0];
-
-  const operatorTranspiler = WhereClauseToTranspilerMap[rootOperator];
-
-  if (operatorTranspiler) {
-    return operatorTranspiler(
-      config,
-      getFieldOrValueSql,
-      dialect,
-      processWhereOperator
-    );
+  if (dialect === SqlDialect.sqlserver) {
+    return query.replace("SELECT ", `SELECT ${limitString} `);
   }
 
-  console.warn("Unknown operator passed to where clause", {
-    operator: rootOperator,
-  });
-  return "";
+  return `${query} ${limitString}`;
 };
