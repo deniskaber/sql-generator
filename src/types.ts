@@ -1,6 +1,11 @@
 import { WhereClauseConfig } from "./transpilers/where-clause/types";
 
-export type SqlDialect = "postgres" | "mysql" | "sqlserver";
+export enum SqlDialect {
+  postgres = "postgres",
+  mysql = "mysql",
+  sqlserver = "sqlserver",
+}
+export type SqlDialectUnion = `${SqlDialect}`;
 
 export type SqlQueryParameters = {
   where?: WhereClauseConfig;

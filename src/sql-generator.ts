@@ -1,17 +1,26 @@
-import { SqlDialect, SqlQueryParameters } from "./types";
+import { SqlDialect, SqlDialectUnion, SqlQueryParameters } from "./types";
 import { WhereClauseToTranspilerMap } from "./transpilers/where-clause";
-import { SqlQueryFields } from "./transpilers/fields/types";
+import {
+  GetFieldOrValueSqlFn,
+  SqlQueryFields,
+} from "./transpilers/fields/types";
 import { WhereClauseConfig } from "./transpilers/where-clause/types";
+import { getFieldOrValueSqlGenerator } from "./transpilers/fields";
 
 export const generateSql = (
-  dialect: SqlDialect,
+  dialect: SqlDialectUnion,
   fields: SqlQueryFields,
   query: SqlQueryParameters
 ): string => {
   let result = "SELECT * FROM data";
 
+  const getFieldOrValueSql = getFieldOrValueSqlGenerator(
+    dialect as SqlDialect,
+    fields
+  );
+
   if (query.where) {
-    const whereString = processWhereOperator(query.where, fields);
+    const whereString = processWhereOperator(query.where, getFieldOrValueSql);
     if (whereString) {
       result += ` WHERE ${whereString}`;
     }
@@ -24,14 +33,14 @@ export const generateSql = (
 
 const processWhereOperator = (
   config: WhereClauseConfig,
-  fields: SqlQueryFields
+  getFieldOrValueSql: GetFieldOrValueSqlFn
 ): string => {
   const rootOperator = config[0];
 
   const operatorTranspiler = WhereClauseToTranspilerMap[rootOperator];
 
   if (operatorTranspiler) {
-    return operatorTranspiler(config, fields);
+    return operatorTranspiler(config, getFieldOrValueSql);
   }
 
   console.warn("Unknown operator passed to where clause", {

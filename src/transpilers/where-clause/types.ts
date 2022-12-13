@@ -1,4 +1,8 @@
-import { FieldNameDescriptor, SqlQueryFields } from "../fields/types";
+import {
+  FieldNameDescriptor,
+  GetFieldOrValueSqlFn,
+  SqlQueryFields,
+} from "../fields/types";
 
 export type WhereOperators = "=" | "!=" | ">" | "<" | "is-empty" | "not-empty";
 
@@ -45,8 +49,7 @@ type EqualityOperatorValues = FieldNameDescriptor | number | string | null;
 
 type ComparisonOperatorValues = FieldNameDescriptor | number;
 
-// FIXME: refactor this not to use SqlQueryFields
 export type WhereOperatorTranspilerFn = (
   config: WhereClauseConfig,
-  fields: SqlQueryFields
+  getFieldOrValueSql: GetFieldOrValueSqlFn
 ) => string;

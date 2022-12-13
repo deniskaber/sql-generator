@@ -1,18 +1,13 @@
-import {
-  EmptyOperatorConfig,
-  EqualsOperatorConfig,
-  NotEmptyOperatorConfig,
-} from "../types";
-import { SqlQueryFields } from "../../fields/types";
-import { resolveArgumentValue } from "../../fields";
+import { EmptyOperatorConfig, NotEmptyOperatorConfig } from "../types";
+import { GetFieldOrValueSqlFn } from "../../fields/types";
 
 export const transpileEmptyNotEmptyOperator = (
   config: EmptyOperatorConfig | NotEmptyOperatorConfig,
-  fields: SqlQueryFields
+  getFieldOrValueSql: GetFieldOrValueSqlFn
 ): string => {
   const [operator, arg] = config;
 
-  const argString = resolveArgumentValue(arg, fields);
+  const argString = getFieldOrValueSql(arg);
 
   return operator === "is-empty"
     ? `${argString} IS NULL`

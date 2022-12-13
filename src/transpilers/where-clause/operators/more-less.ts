@@ -1,15 +1,14 @@
 import { LessOperatorConfig, MoreOperatorConfig } from "../types";
-import { SqlQueryFields } from "../../fields/types";
-import { resolveArgumentValue } from "../../fields";
+import { GetFieldOrValueSqlFn } from "../../fields/types";
 
 export const transpileMoreOrLessOperator = (
   config: MoreOperatorConfig | LessOperatorConfig,
-  fields: SqlQueryFields
+  getFieldOrValueSql: GetFieldOrValueSqlFn
 ): string => {
   const [operator, leftArg, rightArg] = config;
 
-  const leftArgumentString = resolveArgumentValue(leftArg, fields);
-  const rightArgumentString = resolveArgumentValue(rightArg, fields);
+  const leftArgumentString = getFieldOrValueSql(leftArg);
+  const rightArgumentString = getFieldOrValueSql(rightArg);
 
   return `${leftArgumentString} ${operator} ${rightArgumentString}`;
 };
