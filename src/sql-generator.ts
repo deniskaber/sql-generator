@@ -17,6 +17,8 @@ export const generateSql = (
     }
   }
 
+  // TODO: add handling for "limit"
+
   return result;
 };
 
@@ -29,8 +31,6 @@ const processWhereOperator = (
   const operatorTranspiler = WhereClauseToTranspilerMap[rootOperator];
 
   if (operatorTranspiler) {
-    // FIXME fix typing, remove ts-ignore
-    // @ts-ignore
     return operatorTranspiler(config, fields);
   }
 

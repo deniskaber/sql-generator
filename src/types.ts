@@ -1,4 +1,4 @@
-import { WhereClauseConfig } from "./transpilers/where-operator/types";
+import { WhereClauseConfig } from "./transpilers/where-clause/types";
 
 export type SqlDialect = "postgres" | "mysql" | "sqlserver";
 

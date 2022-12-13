@@ -1,9 +1,10 @@
-import { EqualsOperatorConfig, MoreOperatorConfig } from "./types";
-import { resolveArgumentValue } from "../fields";
-import { SqlQueryFields } from "../fields/types";
+import { EqualsOperatorConfig, NotEqualsOperatorConfig } from "../types";
+import { SqlQueryFields } from "../../fields/types";
+import { resolveArgumentValue } from "../../fields";
+import { transpileEmptyNotEmptyOperator } from "./empty-not-empty";
 
 export const transpileEqualsNotEqualsOperator = (
-  config: EqualsOperatorConfig,
+  config: EqualsOperatorConfig | NotEqualsOperatorConfig,
   fields: SqlQueryFields
 ): string => {
   const [operator, leftArg, ...restArgs] = config;
@@ -20,9 +21,12 @@ export const transpileEqualsNotEqualsOperator = (
   if (restArgs.length === 1) {
     const rightField = restArgs[0];
     if (restArgs[0] === null) {
-      return operator === "="
-        ? `${leftArgString} IS NULL`
-        : `${leftArgString} IS NOT NULL`;
+      const correspondingEmptyClauseOperator =
+        operator === "=" ? "is-empty" : "not-empty";
+      return transpileEmptyNotEmptyOperator(
+        [correspondingEmptyClauseOperator, leftArg],
+        fields
+      );
     }
     const rightArgString = resolveArgumentValue(rightField, fields);
 
@@ -37,15 +41,4 @@ export const transpileEqualsNotEqualsOperator = (
   return operator === "="
     ? `${leftArgString} IN (${inValues.join(", ")})`
     : `${leftArgString} NOT IN (${inValues.join(", ")})`;
-};
-export const transpileMoreOrLessOperator = (
-  config: MoreOperatorConfig,
-  fields: SqlQueryFields
-): string => {
-  const [operator, leftArg, rightArg] = config;
-
-  const leftArgumentString = resolveArgumentValue(leftArg, fields);
-  const rightArgumentString = resolveArgumentValue(rightArg, fields);
-
-  return `${leftArgumentString} ${operator} ${rightArgumentString}`;
 };
