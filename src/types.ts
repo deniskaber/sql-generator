@@ -6,12 +6,24 @@ export type SqlQueryParameters = {
   limit?: number;
 };
 
-type WhereOperatorConfig = [
+export type WhereOperatorConfig = EqualityOperatorConfig;
+
+export type EqualityOperatorConfig = [
   "=",
   EqualityOperatorValues,
   EqualityOperatorValues,
   ...EqualityOperatorValues[]
 ];
 
-type EqualityOperatorValues = FieldValueDescriptor | number | string | null;
-type FieldValueDescriptor = ["field", number];
+export type EqualityOperatorValues =
+  | FieldNameDescriptor
+  | number
+  | string
+  | null;
+
+export type FieldDescriptorOrValue =
+  | FieldNameDescriptor
+  | number
+  | string
+  | null;
+export type FieldNameDescriptor = ["field", number];
