@@ -1,4 +1,5 @@
 import { FieldDescriptorOrValue } from "../transpilers/fields/types";
+import { WhereClauseConfig } from "../transpilers/where-clause/types";
 
 export const createGetFieldOrValueSqlMock = () =>
   jest.fn((fieldOrValue: FieldDescriptorOrValue) => {
@@ -16,3 +17,6 @@ export const createGetFieldOrValueSqlMock = () =>
 
     throw new Error("Mock for this case is not implemented!");
   });
+
+export const createProcessChildFnMock = () =>
+  jest.fn((config: WhereClauseConfig) => JSON.stringify(config));

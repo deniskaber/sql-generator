@@ -2,6 +2,7 @@ import { transpileMoreOrLessOperator } from "./operators/more-less";
 import { transpileEqualsNotEqualsOperator } from "./operators/equals-not-equals";
 import { transpileEmptyNotEmptyOperator } from "./operators/empty-not-empty";
 import { WhereOperators, WhereOperatorTranspilerFn } from "./types";
+import { transpileAndOrOperator } from "./operators/and-or";
 
 export const WhereClauseToTranspilerMap: Record<
   WhereOperators,
@@ -14,5 +15,8 @@ export const WhereClauseToTranspilerMap: Record<
   "is-empty": transpileEmptyNotEmptyOperator as WhereOperatorTranspilerFn,
   "not-empty": transpileEmptyNotEmptyOperator as WhereOperatorTranspilerFn,
 
-  // TODO: add support for and, or, not
+  and: transpileAndOrOperator as WhereOperatorTranspilerFn,
+  or: transpileAndOrOperator as WhereOperatorTranspilerFn,
+
+  // TODO: add support for not
 };

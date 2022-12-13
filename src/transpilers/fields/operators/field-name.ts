@@ -28,6 +28,7 @@ const SpecialFieldNameFormatterMap: Record<SqlDialect, FieldNameFormatter> = {
   [SqlDialect.mysql]: formatMySqlField,
 };
 
+// TODO: add tests
 export const resolveFieldName = (
   fieldDescriptor: FieldNameDescriptor,
   queryFields: SqlQueryFields,

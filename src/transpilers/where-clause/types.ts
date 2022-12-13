@@ -1,10 +1,14 @@
-import {
-  FieldNameDescriptor,
-  GetFieldOrValueSqlFn,
-  SqlQueryFields,
-} from "../fields/types";
+import { FieldNameDescriptor, GetFieldOrValueSqlFn } from "../fields/types";
 
-export type WhereOperators = "=" | "!=" | ">" | "<" | "is-empty" | "not-empty";
+export type WhereOperators =
+  | "="
+  | "!="
+  | ">"
+  | "<"
+  | "is-empty"
+  | "not-empty"
+  | "and"
+  | "or";
 
 export type WhereClauseConfig =
   | EqualsOperatorConfig
@@ -12,7 +16,9 @@ export type WhereClauseConfig =
   | MoreOperatorConfig
   | LessOperatorConfig
   | EmptyOperatorConfig
-  | NotEmptyOperatorConfig;
+  | NotEmptyOperatorConfig
+  | AndOperatorConfig
+  | OrOperatorConfig;
 
 export type EqualsOperatorConfig =
   | [
@@ -53,3 +59,9 @@ export type WhereOperatorTranspilerFn = (
   config: WhereClauseConfig,
   getFieldOrValueSql: GetFieldOrValueSqlFn
 ) => string;
+
+export type AndOperatorConfig =
+  | ["and", WhereClauseConfig]
+  | ["and", WhereClauseConfig, WhereClauseConfig];
+
+export type OrOperatorConfig = ["or", WhereClauseConfig, WhereClauseConfig];
