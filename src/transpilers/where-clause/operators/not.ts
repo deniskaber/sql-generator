@@ -55,6 +55,8 @@ export const transpileNotOperator = (
       return processChildFn(oppositeConfig, getFieldOrValueSql, dialect);
     }
 
+    // Question: Are "and" / "or" supported as children of "not"? If yes, bool algebra have to be added here for them as well..
+
     default: {
       console.warn('Unknown child where clause for "not" clause', whereClause);
       return "";

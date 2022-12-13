@@ -3,7 +3,7 @@ import { SqlDialect } from "../../../types";
 
 type FieldNameFormatter = (name: string) => string;
 
-// NOTE: due time limit I didn't add all SQL reserved words here.
+// FIXME: due time limit I didn't add all SQL reserved words here.
 const ReservedFieldNamesByDialectMap: { [key in SqlDialect]: string[] } = {
   postgres: ["all", "and", "user", "string"],
   sqlserver: ["all", "and", "user", "string"],
@@ -28,12 +28,11 @@ const SpecialFieldNameFormatterMap: Record<SqlDialect, FieldNameFormatter> = {
   [SqlDialect.mysql]: formatMySqlField,
 };
 
-// TODO: add tests
 export const resolveFieldName = (
   fieldDescriptor: FieldNameDescriptor,
   queryFields: SqlQueryFields,
   dialect: SqlDialect
-) => {
+): string => {
   const [_operator, fieldNumberKey] = fieldDescriptor;
   const fieldName = queryFields[fieldNumberKey];
 

@@ -24,20 +24,10 @@ export type WhereClauseConfig =
   | NotOperatorConfig;
 
 export type EqualsOperatorConfig =
-  | [
-      "=",
-      EqualityOperatorValues,
-      EqualityOperatorValues,
-      ...EqualityOperatorValues[]
-    ];
+  | ["=", EqualityOperatorValues, ...EqualityOperatorValues[]];
 
 export type NotEqualsOperatorConfig =
-  | [
-      "!=",
-      EqualityOperatorValues,
-      EqualityOperatorValues,
-      ...EqualityOperatorValues[]
-    ];
+  | ["!=", EqualityOperatorValues, ...EqualityOperatorValues[]];
 
 export type MoreOperatorConfig = [
   ">",
@@ -72,8 +62,11 @@ export type WhereOperatorTranspilerFn = (
 
 export type AndOperatorConfig =
   | ["and", WhereClauseConfig]
-  | ["and", WhereClauseConfig, WhereClauseConfig];
+  | ["and", WhereClauseConfig, WhereClauseConfig]
+  | ["and", WhereClauseConfig, WhereClauseConfig, ...WhereClauseConfig[]];
 
-export type OrOperatorConfig = ["or", WhereClauseConfig, WhereClauseConfig];
+export type OrOperatorConfig =
+  | ["or", WhereClauseConfig, WhereClauseConfig]
+  | ["or", WhereClauseConfig, WhereClauseConfig, ...WhereClauseConfig[]];
 
 export type NotOperatorConfig = ["not", WhereClauseConfig];

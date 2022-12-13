@@ -2,11 +2,10 @@ import { FieldDescriptorOrValue, SqlQueryFields } from "./types";
 import { SqlDialect } from "../../types";
 import { resolveFieldName } from "./operators/field-name";
 
-export const FieldOperatorToResolverMap = {
+const FieldOperatorToResolverMap = {
   field: resolveFieldName,
 };
 
-// TODO: add tests
 export const getFieldOrValueSqlGenerator =
   (dialect: SqlDialect, fields: SqlQueryFields) =>
   (fieldOrValue: FieldDescriptorOrValue): string => {

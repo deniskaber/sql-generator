@@ -18,6 +18,14 @@ const formatAndOrClauseResult = (
   const rightOperator = rightClause[0];
   const operatorString = operator === "and" ? "AND" : "OR";
 
+  if (!leftResult.length) {
+    return rightResult;
+  }
+
+  if (!rightResult.length) {
+    return leftResult;
+  }
+
   if (
     (operator === "and" && leftOperator === "or") ||
     (operator === "or" && leftOperator === "and")

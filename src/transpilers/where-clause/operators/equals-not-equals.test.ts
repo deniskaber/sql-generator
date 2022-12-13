@@ -1,9 +1,13 @@
 import { transpileEqualsNotEqualsOperator } from "./equals-not-equals";
-import { createGetFieldOrValueSqlMock } from "../../../test_utils/mocks";
+import {
+  createGetFieldOrValueSqlMock,
+  createProcessChildFnMock,
+} from "../../../test_utils/mocks";
 import { SqlDialect } from "../../../types";
 
 describe('"=" operator', () => {
   const getFieldOrValueSqlMock = createGetFieldOrValueSqlMock();
+  const processChildFnMock = createProcessChildFnMock();
   const defaultDialect = SqlDialect.postgres;
 
   beforeEach(() => {
@@ -15,7 +19,8 @@ describe('"=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["=", ["field", 3], 5],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 = 5");
   });
@@ -25,7 +30,8 @@ describe('"=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["=", ["field", 3], 5, 6],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 IN (5, 6)");
   });
@@ -35,7 +41,8 @@ describe('"=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["=", ["field", 3], 5, 6, "abc", 10, "test"],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 IN (5, 6, 'abc', 10, 'test')");
   });
@@ -44,7 +51,8 @@ describe('"=" operator', () => {
     transpileEqualsNotEqualsOperator(
       ["=", ["field", 3], 5, "abc"],
       getFieldOrValueSqlMock,
-      defaultDialect
+      defaultDialect,
+      processChildFnMock
     );
 
     expect(getFieldOrValueSqlMock).toHaveBeenCalledTimes(3);
@@ -56,6 +64,7 @@ describe('"=" operator', () => {
 
 describe('"!=" operator', () => {
   const getFieldOrValueSqlMock = createGetFieldOrValueSqlMock();
+  const processChildFnMock = createProcessChildFnMock();
   const defaultDialect = SqlDialect.postgres;
 
   beforeEach(() => {
@@ -67,7 +76,8 @@ describe('"!=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["!=", ["field", 3], 5],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 != 5");
   });
@@ -77,7 +87,8 @@ describe('"!=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["!=", ["field", 3], 5, 6],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 NOT IN (5, 6)");
   });
@@ -87,7 +98,8 @@ describe('"!=" operator', () => {
       transpileEqualsNotEqualsOperator(
         ["!=", ["field", 3], 5, 6, "abc", 10, "test"],
         getFieldOrValueSqlMock,
-        defaultDialect
+        defaultDialect,
+        processChildFnMock
       )
     ).toBe("field_3 NOT IN (5, 6, 'abc', 10, 'test')");
   });
@@ -96,7 +108,8 @@ describe('"!=" operator', () => {
     transpileEqualsNotEqualsOperator(
       ["!=", ["field", 3], 5, "abc"],
       getFieldOrValueSqlMock,
-      defaultDialect
+      defaultDialect,
+      processChildFnMock
     );
 
     expect(getFieldOrValueSqlMock).toHaveBeenCalledTimes(3);
@@ -111,7 +124,8 @@ describe('"!=" operator', () => {
         transpileEqualsNotEqualsOperator(
           ["!=", ["field", 3], 5],
           getFieldOrValueSqlMock,
-          SqlDialect.sqlserver
+          SqlDialect.sqlserver,
+          processChildFnMock
         )
       ).toBe("field_3 <> 5");
     });
