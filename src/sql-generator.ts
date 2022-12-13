@@ -1,7 +1,8 @@
 import {
-  EqualityOperatorConfig,
+  EqualsOperatorConfig,
   FieldDescriptorOrValue,
   FieldNameDescriptor,
+  MoreOperatorConfig,
   SqlDialect,
   SqlQueryFields,
   SqlQueryParameters,
@@ -35,6 +36,10 @@ const processWhereOperator = (
     return transpileEqualsOperator(config, fields);
   }
 
+  if (rootOperator === ">") {
+    return transpileMoreOperator(config, fields);
+  }
+
   console.warn("Unknown operator passed to where clause", {
     operator: rootOperator,
   });
@@ -42,7 +47,7 @@ const processWhereOperator = (
 };
 
 const transpileEqualsOperator = (
-  config: EqualityOperatorConfig,
+  config: EqualsOperatorConfig,
   fields: SqlQueryFields
 ): string => {
   const [_operator, leftArg, ...restArgs] = config;
@@ -68,6 +73,18 @@ const transpileEqualsOperator = (
   const inValues = restArgs.map((arg) => resolveArgumentValue(arg, fields));
 
   return `${leftFieldString} in (${inValues.join(", ")})`;
+};
+
+const transpileMoreOperator = (
+  config: MoreOperatorConfig,
+  fields: SqlQueryFields
+): string => {
+  const [_operator, leftArg, rightArg] = config;
+
+  return `${resolveArgumentValue(leftArg, fields)} > ${resolveArgumentValue(
+    rightArg,
+    fields
+  )}`;
 };
 
 const resolveArgumentValue = (
