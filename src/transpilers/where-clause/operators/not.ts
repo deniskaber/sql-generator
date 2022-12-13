@@ -5,14 +5,16 @@ import {
   NotEqualsOperatorConfig,
   NotOperatorConfig,
   OrOperatorConfig,
-  WhereOperatorTranspilerFn,
+  ProcessChildFn,
 } from "../types";
 import { GetFieldOrValueSqlFn } from "../../fields/types";
+import { SqlDialect } from "../../../types";
 
 export const transpileNotOperator = (
   config: NotOperatorConfig,
   getFieldOrValueSql: GetFieldOrValueSqlFn,
-  processChildFn: WhereOperatorTranspilerFn
+  dialect: SqlDialect,
+  processChildFn: ProcessChildFn
 ): string => {
   const whereClause = config[1];
 
@@ -27,7 +29,7 @@ export const transpileNotOperator = (
         [oppositeOperator, ...restConfig],
         ["=", ...restConfig],
       ];
-      return processChildFn(oppositeConfig, getFieldOrValueSql, processChildFn);
+      return processChildFn(oppositeConfig, getFieldOrValueSql, dialect);
     }
 
     case "=":
@@ -38,7 +40,7 @@ export const transpileNotOperator = (
         oppositeOperator,
         ...restConfig,
       ];
-      return processChildFn(oppositeConfig, getFieldOrValueSql, processChildFn);
+      return processChildFn(oppositeConfig, getFieldOrValueSql, dialect);
     }
 
     case "is-empty":
@@ -50,7 +52,7 @@ export const transpileNotOperator = (
         oppositeOperator,
         ...restConfig,
       ];
-      return processChildFn(oppositeConfig, getFieldOrValueSql, processChildFn);
+      return processChildFn(oppositeConfig, getFieldOrValueSql, dialect);
     }
 
     default: {

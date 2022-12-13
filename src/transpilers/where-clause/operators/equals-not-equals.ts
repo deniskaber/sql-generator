@@ -1,10 +1,41 @@
 import { EqualsOperatorConfig, NotEqualsOperatorConfig } from "../types";
 import { GetFieldOrValueSqlFn } from "../../fields/types";
 import { transpileEmptyNotEmptyOperator } from "./empty-not-empty";
+import { SqlDialect } from "../../../types";
+
+type EqualsOperatorFormatterFn = (
+  operator: "=" | "!=",
+  leftArg: string,
+  rightArg: string
+) => string;
+const formatPostgresEqualsOperator = (
+  operator: "=" | "!=",
+  leftArg: string,
+  rightArg: string
+): string => `${leftArg} ${operator} ${rightArg}`;
+const formatMySqlEqualsOperator = (
+  operator: "=" | "!=",
+  leftArg: string,
+  rightArg: string
+): string => `${leftArg} ${operator} ${rightArg}`;
+const formatSqlServerEqualsOperator = (
+  operator: "=" | "!=",
+  leftArg: string,
+  rightArg: string
+): string => `${leftArg} ${operator === "!=" ? "<>" : "="} ${rightArg}`;
+const EqualsOperatorFormattersMap: Record<
+  SqlDialect,
+  EqualsOperatorFormatterFn
+> = {
+  [SqlDialect.postgres]: formatPostgresEqualsOperator,
+  [SqlDialect.mysql]: formatMySqlEqualsOperator,
+  [SqlDialect.sqlserver]: formatSqlServerEqualsOperator,
+};
 
 export const transpileEqualsNotEqualsOperator = (
   config: EqualsOperatorConfig | NotEqualsOperatorConfig,
-  getFieldOrValueSql: GetFieldOrValueSqlFn
+  getFieldOrValueSql: GetFieldOrValueSqlFn,
+  dialect: SqlDialect
 ): string => {
   const [operator, leftArg, ...restArgs] = config;
 
@@ -19,6 +50,8 @@ export const transpileEqualsNotEqualsOperator = (
 
   if (restArgs.length === 1) {
     const rightField = restArgs[0];
+
+    // case for 1 argument which is null, write IS (NOT) NULL
     if (restArgs[0] === null) {
       const correspondingEmptyClauseOperator =
         operator === "=" ? "is-empty" : "not-empty";
@@ -27,12 +60,12 @@ export const transpileEqualsNotEqualsOperator = (
         getFieldOrValueSql
       );
     }
+
     const rightArgString = getFieldOrValueSql(rightField);
 
-    return operator === "="
-      ? `${leftArgString} = ${rightArgString}`
-      : // TODO: add handling for sqlserver ("<>" instead of "!=")
-        `${leftArgString} != ${rightArgString}`;
+    // case for 1 argument which is not null, write left =/!= right
+    const formatter = EqualsOperatorFormattersMap[dialect];
+    return formatter(operator, leftArgString, rightArgString);
   }
 
   const inValues = restArgs.map((arg) => getFieldOrValueSql(arg));

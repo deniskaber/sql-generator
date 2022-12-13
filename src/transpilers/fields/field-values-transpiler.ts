@@ -6,6 +6,7 @@ export const FieldOperatorToResolverMap = {
   field: resolveFieldName,
 };
 
+// TODO: add tests
 export const getFieldOrValueSqlGenerator =
   (dialect: SqlDialect, fields: SqlQueryFields) =>
   (fieldOrValue: FieldDescriptorOrValue): string => {

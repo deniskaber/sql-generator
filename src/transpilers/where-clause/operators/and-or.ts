@@ -1,10 +1,11 @@
 import {
   AndOperatorConfig,
   OrOperatorConfig,
+  ProcessChildFn,
   WhereClauseConfig,
-  WhereOperatorTranspilerFn,
 } from "../types";
 import { GetFieldOrValueSqlFn } from "../../fields/types";
+import { SqlDialect } from "../../../types";
 
 const formatAndOrClauseResult = (
   operator: "and" | "or",
@@ -37,24 +38,17 @@ const formatAndOrClauseResult = (
 export const transpileAndOrOperator = (
   config: AndOperatorConfig | OrOperatorConfig,
   getFieldOrValueSql: GetFieldOrValueSqlFn,
-  processChildFn: WhereOperatorTranspilerFn
+  dialect: SqlDialect,
+  processChildFn: ProcessChildFn
 ): string => {
   const [operator, leftClause, rightClause] = config;
 
   if (!rightClause) {
-    return processChildFn(leftClause, getFieldOrValueSql, processChildFn);
+    return processChildFn(leftClause, getFieldOrValueSql, dialect);
   }
 
-  const leftResult = processChildFn(
-    leftClause,
-    getFieldOrValueSql,
-    processChildFn
-  );
-  const rightResult = processChildFn(
-    rightClause,
-    getFieldOrValueSql,
-    processChildFn
-  );
+  const leftResult = processChildFn(leftClause, getFieldOrValueSql, dialect);
+  const rightResult = processChildFn(rightClause, getFieldOrValueSql, dialect);
 
   return formatAndOrClauseResult(
     operator,

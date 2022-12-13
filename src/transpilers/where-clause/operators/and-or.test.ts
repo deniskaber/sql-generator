@@ -4,10 +4,12 @@ import {
 } from "../../../test_utils/mocks";
 import { transpileAndOrOperator } from "./and-or";
 import { WhereClauseConfig } from "../types";
+import { SqlDialect } from "../../../types";
 
 describe('"and" operator', () => {
   const getFieldOrValueSqlMock = createGetFieldOrValueSqlMock();
   const processChildFnMock = createProcessChildFnMock();
+  const defaultDialect = SqlDialect.postgres;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -22,12 +24,13 @@ describe('"and" operator', () => {
           ["clause2"] as unknown as WhereClauseConfig,
         ],
         getFieldOrValueSqlMock,
+        defaultDialect,
         processChildFnMock
       )
     ).toBe('["clause1"] AND ["clause2"]');
   });
 
-  it(`calls "processChildFnMock" to process child where clause`, () => {
+  it(`calls "processChildFn" to process child where clause`, () => {
     transpileAndOrOperator(
       [
         "and",
@@ -35,6 +38,7 @@ describe('"and" operator', () => {
         ["clause2"] as unknown as WhereClauseConfig,
       ],
       getFieldOrValueSqlMock,
+      defaultDialect,
       processChildFnMock
     );
 
@@ -45,6 +49,7 @@ describe('"and" operator', () => {
 describe('"or" operator', () => {
   const getFieldOrValueSqlMock = createGetFieldOrValueSqlMock();
   const processChildFnMock = createProcessChildFnMock();
+  const defaultDialect = SqlDialect.postgres;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -59,12 +64,13 @@ describe('"or" operator', () => {
           ["clause2"] as unknown as WhereClauseConfig,
         ],
         getFieldOrValueSqlMock,
+        defaultDialect,
         processChildFnMock
       )
     ).toBe('["clause1"] OR ["clause2"]');
   });
 
-  it(`calls "processChildFnMock" to process child where clause`, () => {
+  it(`calls "processChildFn" to process child where clause`, () => {
     transpileAndOrOperator(
       [
         "or",
@@ -72,6 +78,7 @@ describe('"or" operator', () => {
         ["clause2"] as unknown as WhereClauseConfig,
       ],
       getFieldOrValueSqlMock,
+      defaultDialect,
       processChildFnMock
     );
 

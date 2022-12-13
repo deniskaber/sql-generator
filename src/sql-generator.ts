@@ -20,7 +20,11 @@ export const generateSql = (
   );
 
   if (query.where) {
-    const whereString = processWhereOperator(query.where, getFieldOrValueSql);
+    const whereString = processWhereOperator(
+      query.where,
+      getFieldOrValueSql,
+      dialect as SqlDialect
+    );
     if (whereString) {
       result += ` WHERE ${whereString}`;
     }
@@ -33,14 +37,20 @@ export const generateSql = (
 
 const processWhereOperator = (
   config: WhereClauseConfig,
-  getFieldOrValueSql: GetFieldOrValueSqlFn
+  getFieldOrValueSql: GetFieldOrValueSqlFn,
+  dialect: SqlDialect
 ): string => {
   const rootOperator = config[0];
 
   const operatorTranspiler = WhereClauseToTranspilerMap[rootOperator];
 
   if (operatorTranspiler) {
-    return operatorTranspiler(config, getFieldOrValueSql, processWhereOperator);
+    return operatorTranspiler(
+      config,
+      getFieldOrValueSql,
+      dialect,
+      processWhereOperator
+    );
   }
 
   console.warn("Unknown operator passed to where clause", {

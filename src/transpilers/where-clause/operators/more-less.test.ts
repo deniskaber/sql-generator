@@ -17,7 +17,7 @@ describe('">" operator', () => {
     ).toBe("field_3 > 5");
   });
 
-  it(`calls ${getFieldOrValueSqlMock.name} to process field value`, () => {
+  it(`calls "getFieldOrValueSql" to process field value`, () => {
     transpileMoreOrLessOperator([">", ["field", 3], 5], getFieldOrValueSqlMock);
 
     expect(getFieldOrValueSqlMock).toHaveBeenCalledTimes(2);
@@ -42,7 +42,7 @@ describe('"<" operator', () => {
     ).toBe("field_3 < 5");
   });
 
-  it(`calls ${getFieldOrValueSqlMock.name} to process field value`, () => {
+  it(`calls "getFieldOrValueSql" to process field value`, () => {
     transpileMoreOrLessOperator([">", ["field", 3], 5], getFieldOrValueSqlMock);
 
     expect(getFieldOrValueSqlMock).toHaveBeenCalledTimes(2);

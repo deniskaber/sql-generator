@@ -7,6 +7,10 @@ export const transpileEmptyNotEmptyOperator = (
 ): string => {
   const [operator, arg] = config;
 
+  if (arg === null && operator === "is-empty") {
+    return "";
+  }
+
   const argString = getFieldOrValueSql(arg);
 
   return operator === "is-empty"

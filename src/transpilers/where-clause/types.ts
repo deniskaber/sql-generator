@@ -1,4 +1,5 @@
 import { FieldNameDescriptor, GetFieldOrValueSqlFn } from "../fields/types";
+import { SqlDialect } from "../../types";
 
 export type WhereOperators =
   | "="
@@ -57,10 +58,16 @@ type EqualityOperatorValues = FieldNameDescriptor | number | string | null;
 
 type ComparisonOperatorValues = FieldNameDescriptor | number;
 
+export type ProcessChildFn = (
+  config: WhereClauseConfig,
+  getFieldOrValueSql: GetFieldOrValueSqlFn,
+  dialect: SqlDialect
+) => string;
 export type WhereOperatorTranspilerFn = (
   config: WhereClauseConfig,
   getFieldOrValueSql: GetFieldOrValueSqlFn,
-  processChildFn: WhereOperatorTranspilerFn
+  dialect: SqlDialect,
+  processChildFn: ProcessChildFn
 ) => string;
 
 export type AndOperatorConfig =

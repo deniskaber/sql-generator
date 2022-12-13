@@ -17,7 +17,7 @@ describe('"is-empty" operator', () => {
     ).toBe("field_3 IS NULL");
   });
 
-  it(`calls ${getFieldOrValueSqlMock.name} to process field value`, () => {
+  it(`calls "getFieldOrValueSql" to process field value`, () => {
     transpileEmptyNotEmptyOperator(
       ["is-empty", ["field", 3]],
       getFieldOrValueSqlMock
@@ -25,6 +25,12 @@ describe('"is-empty" operator', () => {
 
     expect(getFieldOrValueSqlMock).toHaveBeenCalledTimes(1);
     expect(getFieldOrValueSqlMock).toHaveBeenNthCalledWith(1, ["field", 3]);
+  });
+
+  it(`returns empty string when argument is null`, () => {
+    expect(
+      transpileEmptyNotEmptyOperator(["is-empty", null], getFieldOrValueSqlMock)
+    ).toBe("");
   });
 });
 
@@ -44,7 +50,7 @@ describe('"not-empty" operator', () => {
     ).toBe("field_3 IS NOT NULL");
   });
 
-  it(`calls ${getFieldOrValueSqlMock.name} to process field value`, () => {
+  it(`calls "getFieldOrValueSql" to process field value`, () => {
     transpileEmptyNotEmptyOperator(
       ["not-empty", ["field", 3]],
       getFieldOrValueSqlMock
